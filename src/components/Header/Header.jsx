@@ -1,7 +1,6 @@
 import React from "react";
 import {
   AppBar,
-  Avatar,
   Grid,
   Box,
   IconButton,
@@ -10,29 +9,31 @@ import {
   Toolbar,
   useTheme,
 } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import SearchIcon from "@mui/icons-material/Search";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
+import { StyledIconButton } from "./Header.styles";
+import { BoldTypography } from "../StyledMuiComponents/StyledTypography";
 
-function Header() {
+function Header({ handleDrawerToggle }) {
   const theme = useTheme();
+  const { width } = useWindowDimensions();
+
   return (
     <Box component={AppBar} elevation={0} zIndex={theme.zIndex.drawer + 1}>
       <Toolbar>
         {/* Header Left */}
-        <Grid item xs={3} container justifyContent="space-between">
-          <IconButton
-            sx={{
-              ":hover": {
-                opacity: 0.9,
-              },
-            }}
-          >
-            <Avatar variant="square" />
-          </IconButton>
-          <IconButton color="inherit">
-            <AccessTimeIcon />
-          </IconButton>
+        <Grid item xs={3}>
+          {width < theme.breakpoints.values.sm ? (
+            <StyledIconButton color="inherit" onClick={handleDrawerToggle}>
+              <MenuRoundedIcon />
+            </StyledIconButton>
+          ) : (
+            <BoldTypography variant="h4" component="h1">
+              Siapuda Slack
+            </BoldTypography>
+          )}
         </Grid>
 
         {/* Header Center */}
