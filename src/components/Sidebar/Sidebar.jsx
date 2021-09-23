@@ -11,15 +11,38 @@ import {
   useTheme,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../firebase";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { BoldTypography } from "../StyledMuiComponents/StyledTypography";
 import { StyledDrawer } from "./Sidebar.styles";
 import { StyledIconButton } from "../Header/Header.styles";
-import Channels from "./Channels";
+import SidebarSection from "./SidebarSection";
 
 function Sidebar({ handleDrawerToggle, mobileOpen }) {
   const theme = useTheme();
   const { width } = useWindowDimensions();
+
+  const handleAddDms = async () => {
+    const otherUser = prompt("Please user's username");
+
+    if (otherUser) {
+      await addDoc(collection(db, "directMessages"), {
+        user1: "user",
+        user2: otherUser,
+      });
+    }
+  };
+
+  const handleAddChannel = async () => {
+    const channelName = prompt("Please enter channel name");
+
+    if (channelName) {
+      await addDoc(collection(db, "channels"), {
+        name: channelName,
+      });
+    }
+  };
 
   const drawer = (
     <Box>
@@ -57,7 +80,16 @@ function Sidebar({ handleDrawerToggle, mobileOpen }) {
             </Grid>
           </Grid>
         </ListItem>
-        <Channels />
+        <SidebarSection
+          collectionName="channels"
+          title="Channels"
+          handleAdd={handleAddChannel}
+        />
+        <SidebarSection
+          collectionName="directMessages"
+          title="Direct Messages"
+          handleAdd={handleAddDms}
+        />
       </List>
       <Divider />
     </Box>
@@ -79,7 +111,9 @@ function Sidebar({ handleDrawerToggle, mobileOpen }) {
             {drawer}
           </StyledDrawer>
         ) : (
-          <StyledDrawer variant="permanent">{drawer}</StyledDrawer>
+          <StyledDrawer variant="permanent" anchor="left">
+            {drawer}
+          </StyledDrawer>
         )}
       </Box>
     </Box>

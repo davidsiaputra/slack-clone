@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { ThemeProvider } from "@mui/material";
-import styled from "@emotion/styled";
+import { ThemeProvider, styled } from "@mui/material";
 import theme from "./theme";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
+import Chat from "./components/Chat/Chat";
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -18,14 +18,16 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="app">
         <Router>
-          <Header handleDrawerToggle={handleDrawerToggle} />
           <AppBody>
+            <Header handleDrawerToggle={handleDrawerToggle} />
             <Sidebar
               mobileOpen={mobileOpen}
               handleDrawerToggle={handleDrawerToggle}
             />
             <Switch>
-              <Route path="/"></Route>
+              <Route path="/" exact>
+                <Chat />
+              </Route>
             </Switch>
           </AppBody>
         </Router>
@@ -34,6 +36,8 @@ function App() {
   );
 }
 
-const AppBody = styled.div``;
+const AppBody = styled("div")({
+  display: "flex",
+});
 
 export default App;

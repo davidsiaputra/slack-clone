@@ -21,7 +21,12 @@ function Header({ handleDrawerToggle }) {
   const { width } = useWindowDimensions();
 
   return (
-    <Box component={AppBar} elevation={0} zIndex={theme.zIndex.drawer + 1}>
+    <Box
+      component={AppBar}
+      position="fixed"
+      elevation={0}
+      zIndex={theme.zIndex.drawer + 1}
+    >
       <Toolbar>
         {/* Header Left */}
         <Grid item xs={3}>

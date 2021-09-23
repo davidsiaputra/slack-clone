@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase";
-import { addDoc, collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 import { Collapse, List } from "@mui/material";
 import SidebarOption from "./SidebarOption";
@@ -10,58 +10,54 @@ import AddBoxSharpIcon from "@mui/icons-material/AddBoxSharp";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-function Channels() {
-  const [channels, setChannels] = useState([]);
+function SidebarSection({ collectionName, title, handleAdd }) {
+  const [rooms, setRooms] = useState([]);
   const [open, setOpen] = React.useState(true);
 
   useEffect(() => {
     const unsubscribeToRooms = onSnapshot(
-      collection(db, "channels"),
-      (channelCollections) => {
-        setChannels(channelCollections.docs);
+      collection(db, collectionName),
+      (requestedCollection) => {
+        setRooms(requestedCollection.docs);
       }
     );
 
     return () => {
       unsubscribeToRooms();
     };
-  }, []);
+  }, [collectionName]);
 
   const handleOpen = () => {
     setOpen(!open);
   };
 
-  const addChannel = async () => {
-    const channelName = prompt("Please enter channel name");
-
-    if (channelName) {
-      await addDoc(collection(db, "channels"), {
-        name: channelName,
-      });
-    }
-  };
   return (
     <List disablePadding>
       <SidebarOption
-        title="Channels"
+        title={title}
         handleClick={handleOpen}
         Icon={open ? ExpandLess : ExpandMore}
         subheader
       />
       <Collapse in={open} unmountOnExit>
         <List disablePadding>
-          {channels?.map((channel) => (
-            <SidebarOption key={channel.id} title={channel.data().name} />
+          {rooms?.map((room) => (
+            <SidebarOption
+              key={room.id}
+              chatId={room.id}
+              title={room.data().name}
+              collectionName={collectionName}
+            />
           ))}
         </List>
         <SidebarOption
-          title="Add Channel"
+          title={`Add ${title}`}
           Icon={AddBoxSharpIcon}
-          handleClick={addChannel}
+          handleClick={handleAdd}
         />
       </Collapse>
     </List>
   );
 }
 
-export default Channels;
+export default SidebarSection;
